@@ -2,6 +2,8 @@ package data;
 
 import java.util.List;
 
+import mongo.MongoDbHandler;
+
 public class GenericDao<T> {
 
 	private DataHandler<T> db;
