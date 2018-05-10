@@ -22,7 +22,7 @@ import data.DataHandlerBase;
 public class MongoDbHandler<T> extends DataHandlerBase<T> {
 
 	private MongoCollection<Document> collection;
-	private static final String MONGO_PROPERTIES = "mongo.mongo_conf";
+	private static final String MONGO_PROPERTIES = "mongo_conf";
 
 	public MongoDbHandler(Class<T> clazz) {
 		super(clazz, MONGO_PROPERTIES);
