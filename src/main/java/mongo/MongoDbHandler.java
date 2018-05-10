@@ -12,23 +12,23 @@ import com.mongodb.client.MongoCursor;
 
 import data.DataHandler;
 import data.DataHandlerBase;
+import utils.Constants;
 
 /**
  * Implementation of DataHandler for MongoDB database
- * @author DS007463
+ * 
+ * @author danielsantil
  *
  * @param <T> See documentation at {@link DataHandler}
  */
 public class MongoDbHandler<T> extends DataHandlerBase<T> {
 
 	private MongoCollection<Document> collection;
-	private static final String MONGO_PROPERTIES = "mongo_conf";
 
 	public MongoDbHandler(Class<T> clazz) {
-		super(clazz, MONGO_PROPERTIES);
+		super(clazz, Constants.MONGO_PROPS_FILE);
 		this.collection = MongoClients.create(props.getString("DB_URL"))
-				.getDatabase(props.getString("DB_NAME"))
-				.getCollection(collectionName);
+				.getDatabase(props.getString("DB_NAME")).getCollection(collectionName);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class MongoDbHandler<T> extends DataHandlerBase<T> {
 	@Override
 	public T readFirst() {
 		Document doc = collection.find().first();
-		return new Gson().fromJson(doc.toJson(), type);
+		return doc != null ? new Gson().fromJson(doc.toJson(), type) : null;
 	}
 
 	@Override

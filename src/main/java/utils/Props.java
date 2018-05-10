@@ -3,6 +3,13 @@ package utils;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+/**
+ * Retrieve messages stored in properties files.<br>
+ * Name of properties file is passed in the constructor
+ * 
+ * @author danielsantil
+ *
+ */
 public class Props {
 
 	private static String BUNDLE_NAME;
