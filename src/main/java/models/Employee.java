@@ -1,6 +1,8 @@
 package models;
 
-//@Table("employees")
+import annotations.Table;
+
+@Table("employees")
 public class Employee {
 
 	private String id;
