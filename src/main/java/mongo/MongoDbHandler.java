@@ -24,50 +24,42 @@ import utils.Constants;
 public class MongoDbHandler<T> extends DataHandlerBase<T> {
 
 	private MongoCollection<Document> collection;
+	private Gson gson;
 
 	public MongoDbHandler(Class<T> clazz) {
 		super(clazz, Constants.MONGO_PROPS_FILE);
 		this.collection = MongoClients.create(props.getString("DB_URL"))
 				.getDatabase(props.getString("DB_NAME")).getCollection(collectionName);
+		this.gson = new Gson();
 	}
 
 	@Override
 	public void insert(T obj) {
-		String objJson = new Gson().toJson(obj);
+		String objJson = gson.toJson(obj);
 		collection.insertOne(Document.parse(objJson));
 	}
 
 	@Override
 	public void insert(List<T> objs) {
 		List<Document> docs = new ArrayList<>();
-		objs.forEach(obj -> {
-			String objJson = new Gson().toJson(obj);
-			docs.add(Document.parse(objJson));
-		});
-
+		objs.forEach(obj -> docs.add(Document.parse(gson.toJson(obj))));
 		collection.insertMany(docs);
 	}
 
 	@Override
 	public T readFirst() {
 		Document doc = collection.find().first();
-		return doc != null ? new Gson().fromJson(doc.toJson(), type) : null;
+		return doc != null ? gson.fromJson(doc.toJson(), this.type) : null;
 	}
 
 	@Override
 	public List<T> readAll() {
 		List<T> objs = new ArrayList<>();
-
-		List<Document> docs = new ArrayList<>();
 		try (MongoCursor<Document> cursor = collection.find().iterator()) {
 			while (cursor.hasNext()) {
-				docs.add(cursor.next());
+				objs.add(gson.fromJson(cursor.next().toJson(), this.type));
 			}
 		}
-
-		docs.forEach(doc -> {
-			objs.add(new Gson().fromJson(doc.toJson(), type));
-		});
 		return objs;
 	}
 
